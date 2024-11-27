@@ -42,43 +42,30 @@ playlist_b = {
     'Опять метель': 3.37,
 }
 
-def _get_random_songs(playlist) -> dict:
-    """
-    TODO - опиши документацию
-    """
-    # TODO - Создаешь функцию, которая обрабатывает два разных плейлиста. 
-    # То есть в качестве параметра можно вставить и плейлист d и плейлист b" 
-    # !!! функция _get_random_songs должна возвращать словарь из n пар случайных песен
-    merge_playlist = list(zip(playlist_d[0], playlist_d[1]))
-    random.shuffle(merge_playlist)
-    return merge_playlist[:n]
+def _get_random_songs(playlist, n) -> dict:
+    if isinstance(playlist, list):
+        songs = list(zip(playlist[0], playlist[1]))
+    elif isinstance(playlist, dict):
+        songs = list(playlist.items())
+        
+    random.shuffle(songs)
+    return dict(songs[:n])
 
-# print(get_random_songs(playlist_b, 3))
+# print(_get_random_songs(playlist_b, 3))
 
 
-def get_duration(playlist: list|dict) -> timedelta:
-    """
-    Функция принимает плейлист с песнями и временем звучания в виде коллекции и возвращает время звучания
+def get_duration(playlist: list|dict, n) -> timedelta:
 
-    :param playlist: исходная коллекция с песнями
-    :type playlist: list|dict
+    song_list = _get_random_songs(playlist, n)
+    total_time = timedelta()
 
-    :param n: количество песен
-    :type n: int
-
-    :return: время звучания
-    :rtype: timedelta
-    """
-    song_list: dict = _get_random_songs(playlist)  # TODO - дописать эту функцию, 
-    total_time = timedelta(minutes=0, seconds=0)
-    for i in song_list.values():
-        round_time = Decimal(i).quantize(Decimal("1.00"), ROUND_HALF_DOWN)
+    for song, duration in song_list.items():
+        round_time = Decimal(duration).quantize(Decimal("1.00"), ROUND_HALF_DOWN)
         _min, _sec = str(round_time).split(".")
-        res = timedelta(minutes=int(_min),seconds=int(_sec))
-        total_time = total_time + res
-                            
+        res = timedelta(minutes=int(_min), seconds=int(_sec))
+        total_time += res
+
     return total_time
 
-# вызов
-n = 3
-print(get_duration(playlist_d, n))
+a = get_duration(playlist_d, 6)
+print(a)
