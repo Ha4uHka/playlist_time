@@ -56,6 +56,20 @@ def _get_random_songs(playlist) -> dict:
 # print(get_random_songs(playlist_b, 3))
 
 
+def _get_random_songs(playlist) -> dict:
+    """
+    TODO - опиши документацию
+    """
+    # TODO - Создаешь функцию, которая обрабатывает два разных плейлиста. 
+    # То есть в качестве параметра можно вставить и плейлист d и плейлист b" 
+    # !!! функция _get_random_songs должна возвращать словарь из n пар случайных песен
+    merge_playlist = list(zip(playlist_d[0], playlist_d[1]))
+    random.shuffle(merge_playlist)
+    return merge_playlist[:n]
+
+# print(get_random_songs(playlist_b, 3))
+
+
 def get_duration(playlist: list|dict) -> timedelta:
     """
     Функция принимает плейлист с песнями и временем звучания в виде коллекции и возвращает время звучания
