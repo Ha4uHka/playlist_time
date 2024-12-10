@@ -43,54 +43,29 @@ playlist_b = {
 }
 
 def _get_random_songs(playlist, n) -> dict:
-    """
-    Функция принимает плейлист с песнями и временем звучания в виде коллекции и возвращает случайное n песен
-    
-    playlist: исходная коллекция с песнями, где ключи - названия песен, а значения - их продолжительность, 
-    playlist_type: list|dict
-    
-    n: количество песен
-    n_type: int
-    
-    return: словарь из n пар случайных песен
-    return_type: dict
-    """
-    if isinstance(playlist, dict):
-        random_songs = random.sample(list(playlist.keys()), n)
-        result = {song: playlist[song] for song in random_songs}
+    if isinstance(playlist, list):
+        songs = list(zip(playlist[0], playlist[1]))
+    elif isinstance(playlist, dict):
+        songs = list(playlist.items())
         
-    elif isinstance(playlist, tuple) and len(playlist) == 2:
-        random_indices = random.sample(range(len(playlist[0])), n)
-        result = {playlist[0][i]: playlist[1][i] for i in random_indices}
-        
-    return result
+    random.shuffle(songs)
+    return dict(songs[:n])
 
-n = 5
-test = _get_random_songs(playlist_b, n)
-print(test)
+# print(_get_random_songs(playlist_b, 3))
 
 
-def get_duration(playlist: list|dict, n: int) -> timedelta:
-    """
-    Функция принимает плейлист с песнями и временем звучания в виде коллекции и возвращает время звучания
+def get_duration(playlist: list|dict, n) -> timedelta:
 
-    playlist: исходная коллекция с песнями
-    playlist_type: list|dict
+    song_list = _get_random_songs(playlist, n)
+    total_time = timedelta()
 
-    n: количество песен
-    n_type: int
-
-    return: время звучания
-    return_type: timedelta
-    """
-    song_list: dict = _get_random_songs(playlist, n)
-    total_time = timedelta(minutes=0, seconds=0)
-    for i in song_list.values():
-        round_time = Decimal(i).quantize(Decimal("1.00"), ROUND_HALF_DOWN)
+    for song, duration in song_list.items():
+        round_time = Decimal(duration).quantize(Decimal("1.00"), ROUND_HALF_DOWN)
         _min, _sec = str(round_time).split(".")
         res = timedelta(minutes=int(_min),seconds=int(_sec))
         total_time = total_time + res
                             
     return total_time
 
-print(get_duration(test, n))
+a = get_duration(playlist_d, 6)
+print(a)
